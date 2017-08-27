@@ -21,9 +21,14 @@ public class ResultFactory {
                                                          JsonObject resultJson,
                                                          Class<T> tClass){
 
+      if(resultJson != null && resultJson.has("error")){
+          JsonObject error = resultJson.getAsJsonObject("error");
+          return getInstance(error);
+      }
       //step 1 check if data is available
-      JsonObject data = resultJson.get("data").getAsJsonObject();
-      if(data != null){
+
+      else if(resultJson != null && resultJson.has("data")){
+          JsonObject data = resultJson.get("data").getAsJsonObject();
           JsonElement elements = data.get("data");
           if(elements != null && elements instanceof JsonArray){
               return getInstance(gson, data, (JsonArray)elements, tClass);
@@ -36,8 +41,12 @@ public class ResultFactory {
   }
 
     public static <T extends BaseModel> Result getInstance(Throwable throwable){
-        ResultObj resultObj = new ResultObj();
-        resultObj.setError(new ResultError(throwable));
+        ResultError resultObj = new ResultError(throwable.getMessage());
+        return resultObj;
+    }
+
+    public static <T extends BaseModel> Result getInstance(JsonObject error){
+        ResultError resultObj = new ResultError(error.get("message").getAsString());
         return resultObj;
     }
 

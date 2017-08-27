@@ -1,5 +1,7 @@
 package io.square1.laravelConnect.model;
 
+import android.os.Bundle;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -65,19 +67,23 @@ public abstract class BaseModel  {
 
 
     public BaseModel(String primaryKey){
-        mId = new ModelProperty(primaryKey, Integer.class);
-        mId.setValue(ID_UNSET);
         mRelations = new HashMap<>();
         mManyRelations = new HashMap<>();
         mProperties = new HashMap<>();
         mAttributes = new HashMap<>();
+
+        mId = addProperty(primaryKey, Integer.class);
+        mId.setValue(ID_UNSET);
     }
 
 
     protected final ModelProperty addProperty(String name, Class<?> tClass) {
-        ModelProperty newProperty = new ModelProperty(name, tClass);
-        mProperties.put(name, newProperty);
-        mAttributes.put(name, newProperty);
+        ModelProperty newProperty = mProperties.get(name);
+        if(newProperty == null) {
+            newProperty = new ModelProperty(name, tClass);
+            mProperties.put(name, newProperty);
+            mAttributes.put(name, newProperty);
+        }
         return newProperty;
     }
 
@@ -136,7 +142,7 @@ public abstract class BaseModel  {
     }
 
 
-    protected static ModelList index(Class<? extends BaseModel> modelClass){
+    public static ModelList index(Class<? extends BaseModel> modelClass){
         return new ModelList(modelClass);
 
     }
@@ -157,4 +163,20 @@ public abstract class BaseModel  {
         return getClass().getSimpleName() + " Id=" + mId.getValue();
     }
 
+
+    private final static String PACK_CLASS = "PACK_CLASS";
+    private final  static String PACK_ID = "PACK_ID";
+
+    public Bundle pack(){
+        Bundle pack = new Bundle();
+        pack.putSerializable(PACK_CLASS, getClass());
+        pack.putInt(PACK_ID, getIdValue());
+        return pack;
+    }
+
+    public static ApiRequest unpack(Bundle pack, LaravelConnectClient.Observer observer){
+        Class modelClass = (Class) pack.getSerializable(PACK_CLASS);
+        int modelId = pack.getInt(PACK_ID, 0);
+        return show(modelClass, modelId, observer);
+    }
 }

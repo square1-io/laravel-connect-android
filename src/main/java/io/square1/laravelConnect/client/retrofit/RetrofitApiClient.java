@@ -26,7 +26,9 @@ import io.square1.laravelConnect.model.ModelUtils;
 import io.square1.laravelConnect.requests.Param;
 import io.square1.laravelConnect.requests.ParamSerializer;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -204,9 +206,10 @@ public class RetrofitApiClient {
     }
 
 
-    public ApiRequest generalPostRequest(Class model,  String route, Map<String, String> params , LaravelConnectClient.Observer observer ) {
+    public ApiRequest generalPostRequest(Class model,  String route, Map<String, Param> params, LaravelConnectSettings settings, LaravelConnectClient.Observer observer ) {
 
-        Call call = mRetrofitPlainService.post(route);
+        Map<String, RequestBody> body = RetrofitParamSerializer.serializeForMultipartPost(params, settings);
+        Call call = mRetrofitPlainService.post(route, body);
         RetrofitRequest retrofitRequest = new RetrofitRequest(call, new RetrofitCallHandler(model, observer));
         return retrofitRequest;
     }

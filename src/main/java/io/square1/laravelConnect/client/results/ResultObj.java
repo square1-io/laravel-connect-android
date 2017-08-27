@@ -16,6 +16,10 @@ public class ResultObj<T extends BaseModel> extends Result {
          mData = data;
     }
 
+    public  boolean isSuccessful() {
+        return mData != null;
+    }
+
     public T getData(){
         return mData;
     }

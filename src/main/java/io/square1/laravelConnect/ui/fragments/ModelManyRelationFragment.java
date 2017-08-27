@@ -20,6 +20,8 @@ import io.square1.laravelConnect.model.ModelProperty;
  */
 public class ModelManyRelationFragment extends BaseModelListFragment {
 
+    public static final String TAG = ModelManyRelationFragment.class.getName();
+
     private static final String ARG_RELATION = "ARG_RELATION";
 
     public static ModelManyRelationFragment getInstance(ModelManyRelationList relation){
@@ -35,7 +37,7 @@ public class ModelManyRelationFragment extends BaseModelListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mModelManyRelationList = getArguments().getParcelable(ARG_RELATION);
+
 
     }
 
@@ -52,6 +54,11 @@ public class ModelManyRelationFragment extends BaseModelListFragment {
         super.onActivityCreated(savedInstanceState);
 
         setTitle(mModelManyRelationList.toString());
+    }
+
+    @Override
+    public void initRequest() {
+        mModelManyRelationList = getArguments().getParcelable(ARG_RELATION);
     }
 
     @Override

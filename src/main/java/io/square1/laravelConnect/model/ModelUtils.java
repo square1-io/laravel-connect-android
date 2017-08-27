@@ -1,12 +1,18 @@
 package io.square1.laravelConnect.model;
 
+import android.content.Context;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import dalvik.system.DexFile;
 
 /**
  * Created by roberto on 05/06/2017.
@@ -88,6 +94,44 @@ public class ModelUtils {
         }catch (Exception e){
             return null;
         }
+    }
+
+    public static ArrayList getClassesForPackage(Context context, String packageName) {
+
+        ArrayList<Class> classes = new ArrayList<Class>();
+        try {
+            String packageCodePath = context.getPackageCodePath();
+            DexFile df = new DexFile(packageCodePath);
+            for (Enumeration<String> iter = df.entries(); iter.hasMoreElements(); ) {
+                String className = iter.nextElement();
+                if (className.contains(packageName)) {
+                    Class currentClass =  getModelClassForName(className);
+                    if(currentClass != null) {
+                        classes.add(currentClass);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return  classes;
+    }
+
+    private static Class getModelClassForName(String className){
+
+        try{
+            Class currentClass = Class.forName(className);
+
+            if(BaseModel.class.isAssignableFrom(currentClass)){
+                return currentClass;
+            }
+
+        }catch (Exception e){
+
+        }
+
+        return null;
 
     }
 }

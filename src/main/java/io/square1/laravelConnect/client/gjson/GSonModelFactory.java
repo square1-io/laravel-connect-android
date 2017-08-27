@@ -29,6 +29,10 @@ public class GSonModelFactory {
 
     public static <T extends BaseModel> T getModelInstance(Gson gson, JsonElement json, Class<T> tClass) {
 
+        if(json == null){
+            return null;
+        }
+
         String currentkey = "";
 
         try {
@@ -74,21 +78,23 @@ public class GSonModelFactory {
 
                 currentkey = entry.getKey();
 
-                if("business".equalsIgnoreCase(currentkey)){
-                    Log.e("","");
-                }
 
                 JsonElement jsonElement = jsonObject.get(currentkey);
 
-                if(jsonElement instanceof com.google.gson.JsonNull){
-                    Log.d("JSON", "skipping null " + tClass + " key " + currentkey) ;
-                    continue;
-                }
-                Log.d("JSON", "Parsing " + tClass + " key " + currentkey) ;
+               // if(jsonElement instanceof com.google.gson.JsonNull){
+               //     Log.d("JSON", "skipping null " + tClass + " key " + currentkey) ;
+               //     continue;
+               // }
+               // Log.d("JSON", "Parsing " + tClass + " key " + currentkey) ;
 
-                if(jsonElement != null){
+                //if(jsonElement != null){
                     //parsing basic properties
                     if(entry.getValue().getType() == BaseModel.ATTRIBUTE_PROPERTY){
+
+                        if(jsonElement == null || jsonElement instanceof com.google.gson.JsonNull){
+                            continue;
+                        }
+
                         ModelProperty modelProperty = (ModelProperty)entry.getValue();
                         Log.d("JSON", "Parsing p:" + tClass + " key " + currentkey) ;
                         Class propertyClass = modelProperty.getPropertyClass();
@@ -100,31 +106,29 @@ public class GSonModelFactory {
                     }
                     else if(entry.getValue().getType() == BaseModel.ATTRIBUTE_REL_ONE){
 
-                            Log.d("JSON", "Parsing one-r:" + tClass + " key " + currentkey) ;
                             ModelOneRelation modelOneRelation = (ModelOneRelation) entry.getValue();
                             BaseModel relationObject = getModelInstance(gson,  jsonElement,
                                     modelOneRelation.getRelationClass());
+
                            if(relationObject != null) {
                                modelOneRelation.setValue(relationObject);
                            }else {
                                faultedRelations.add(modelOneRelation);
                            }
-
-
                     }
                     else if(entry.getValue().getType() == BaseModel.ATTRIBUTE_REL_MANY){
                         /// because the number of entries in undefined for Many relation
                         // and we are missing pagination here we ignore them here for now .
-                        ModelManyRelation modelManyRelation = (ModelManyRelation)entry.getValue();
+                       // ModelManyRelation modelManyRelation = (ModelManyRelation)entry.getValue();
                        // modelManyRelation.clear();
-                        ArrayList objects = getModelListInstance(gson,
-                                (JsonArray)jsonElement ,
-                                modelManyRelation.getRelationClass());
+                        //ArrayList objects = getModelListInstance(gson,
+                        //        (JsonArray)jsonElement ,
+                        //        modelManyRelation.getRelationClass());
 
                        // modelManyRelation.addAll(objects);
                     }
 
-                }
+              //  }
             }
 
             /// any faulted relations ?

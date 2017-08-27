@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:paddingTop="10dip"
+        android:paddingLeft="10dip"
+        android:text="Property Name"
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:paddingLeft="10dip"
+            android:text="Type:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:paddingLeft="10dip"
+            android:text="Property type"
+            android:id="@+id/type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:paddingLeft="10dip"
+            android:text="Value:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:paddingLeft="10dip"
+            android:text="Property Value"
+            android:id="@+id/value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

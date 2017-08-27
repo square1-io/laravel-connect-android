@@ -3,6 +3,9 @@ package io.square1.laravelConnect.ui.fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
+import android.view.View;
 
 import io.square1.laravelConnect.client.ApiRequest;
 import io.square1.laravelConnect.model.ModelList;
@@ -16,6 +19,7 @@ import io.square1.laravelConnect.model.ModelList;
  */
 public class ModelListFragment extends BaseModelListFragment {
 
+    public static final String TAG = ModelListFragment.class.getName();
 
     private static final String ARG_LIST = "ARG_LIST";
 
@@ -43,7 +47,18 @@ public class ModelListFragment extends BaseModelListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void initRequest() {
         mModelList = getArguments().getParcelable(ARG_LIST);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setTitle(String.valueOf(mModelList));
     }
 
     @Override

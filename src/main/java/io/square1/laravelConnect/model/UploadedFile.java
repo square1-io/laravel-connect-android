@@ -4,6 +4,8 @@ package io.square1.laravelConnect.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.File;
+
 /**
  * Created by roberto on 16/04/2017.
  */
@@ -11,6 +13,8 @@ import android.os.Parcelable;
 public class UploadedFile implements Parcelable {
 
     private String mUrl;
+
+
 
     public UploadedFile(String url){
         mUrl = url;

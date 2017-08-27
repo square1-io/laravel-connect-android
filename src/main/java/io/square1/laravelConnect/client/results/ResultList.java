@@ -19,6 +19,10 @@ public class ResultList<T extends BaseModel> extends Result{
         mData = new ArrayList<>();
     }
 
+    public  boolean isSuccessful() {
+        return true;
+    }
+
 
     protected void setPagination(Pagination pagination){
         mPagination = pagination;

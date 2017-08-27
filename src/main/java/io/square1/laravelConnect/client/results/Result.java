@@ -7,19 +7,13 @@ package io.square1.laravelConnect.client.results;
 public abstract class Result {
 
 
-    private ResultError mError;
+
 
     public Result(){
-        mError = null;
+
     }
 
-    public boolean isSuccessful(){
-        return mError == null;
-    }
-
-    void setError(ResultError error){
-        mError = error;
-    }
+    public abstract  boolean isSuccessful();
 
     public abstract Object getData();
 

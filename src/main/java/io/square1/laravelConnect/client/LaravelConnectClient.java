@@ -162,8 +162,7 @@ public class LaravelConnectClient {
     }
 
     public ApiRequest post(Class model, String route, HashMap<String, Param>  parameters, LaravelConnectClient.Observer observer ) {
-        TreeMap<String, String> parameterValues = new TreeMap<>();
-        return mClientImplementation.generalPostRequest(model, route, parameterValues, observer);
+        return mClientImplementation.generalPostRequest(model, route, parameters, mSettings, observer);
     }
 
     public ApiRequest get(Class model,String route, HashMap<String, Param>  parameters, LaravelConnectClient.Observer observer) {

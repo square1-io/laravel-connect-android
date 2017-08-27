@@ -94,6 +94,10 @@ public abstract class BaseModelListFragment extends Fragment implements LaravelC
         }
     }
 
+    public void notifyDataSetChanged(){
+        mAdapter.notifyDataSetChanged();
+    }
+
     public String getSearchTerm(){
         return mSearchTerm;
     }
@@ -103,11 +107,11 @@ public abstract class BaseModelListFragment extends Fragment implements LaravelC
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
-            mAdapter = new BaseModelRecyclerViewAdapter(mListener);
+            mAdapter = new BaseModelRecyclerViewAdapter(this, mListener);
             mAdapter.setPresentBaseModelClass(getModelClassPresenter());
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnModelClassListFragmentInteractionListener");
         }
 
 
@@ -124,7 +128,10 @@ public abstract class BaseModelListFragment extends Fragment implements LaravelC
         refresh();
     }
 
+    public abstract void initRequest();
+
     public void refresh(){
+        initRequest();
         mCurrentPage = Pagination.NOPAGE;
         load();
     }
@@ -198,7 +205,7 @@ public abstract class BaseModelListFragment extends Fragment implements LaravelC
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(BaseModel model);
+        void onListFragmentInteraction(BaseModel model, Fragment originFragment);
     }
 
 
@@ -207,6 +214,7 @@ public abstract class BaseModelListFragment extends Fragment implements LaravelC
         // Here is where we are going to implement the filter logic
         mSearchTerm = query;
         onFilterContent(query);
+        refresh();
         return false;
     }
 

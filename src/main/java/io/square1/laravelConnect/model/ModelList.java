@@ -244,7 +244,7 @@ public class ModelList<T extends BaseModel>  implements List<T>, LaravelConnectC
     @Override
     public String toString() {
         String path = ModelUtils.pathForModel(mClass);
-        return  path  + "/";
+        return  path  + "/list";
     }
 
     @Override

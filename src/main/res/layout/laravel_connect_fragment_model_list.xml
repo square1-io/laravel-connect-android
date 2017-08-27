@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@android:color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -12,7 +15,7 @@
     android:id="@+id/name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
-<android.support.v7.widget.RecyclerView
+    <android.support.v7.widget.RecyclerView
     android:id="@+id/list"
     android:name="io.square1.test.CountryFragment"
     android:layout_width="match_parent"
@@ -24,3 +27,4 @@
     tools:context="io.square1.test.fragments.ModelListFragment"
     tools:listitem="@layout/laravel_connect_fragment_model_list" />
     </LinearLayout>
+</FrameLayout>

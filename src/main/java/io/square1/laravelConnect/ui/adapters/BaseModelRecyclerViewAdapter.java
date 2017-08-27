@@ -1,5 +1,6 @@
 package io.square1.laravelConnect.ui.adapters;
 
+import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ public class BaseModelRecyclerViewAdapter extends RecyclerView.Adapter<BaseModel
 
 
     private final ArrayList<BaseModel> mValues;
+    private final Fragment mFragment;
     private final BaseModelListFragment.OnListFragmentInteractionListener mListener;
     private PresentBaseModelClass mPresentBaseModelClass = null;
     private PresentBaseModelClass mInternalBaseModelClass = new PresentBaseModelClass() {
@@ -48,9 +50,10 @@ public class BaseModelRecyclerViewAdapter extends RecyclerView.Adapter<BaseModel
         }
     };
 
-    public BaseModelRecyclerViewAdapter(BaseModelListFragment.OnListFragmentInteractionListener listener) {
+    public BaseModelRecyclerViewAdapter(Fragment fragment, BaseModelListFragment.OnListFragmentInteractionListener listener) {
         mValues = new ArrayList<>();
         mListener = listener;
+        mFragment = fragment;
         mPresentBaseModelClass = mInternalBaseModelClass;
 
     }
@@ -83,7 +86,7 @@ public class BaseModelRecyclerViewAdapter extends RecyclerView.Adapter<BaseModel
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListFragmentInteraction(holder.mItem, mFragment );
                 }
             }
         });
