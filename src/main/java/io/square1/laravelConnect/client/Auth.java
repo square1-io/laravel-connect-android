@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 
 import io.square1.laravelConnect.model.BaseModel;
@@ -22,22 +25,26 @@ public class Auth {
     private static Auth sInstance;
 
 
-    synchronized static Auth init(Context context){
+    synchronized static Auth init(Context context, Gson gson, Class userClass){
 
         if(sInstance == null){
-            sInstance = new Auth(context);
+            sInstance = new Auth(context, userClass, gson);
         }
         return sInstance;
     }
 
     private static final String PREF_JWT_TOKEN =  "PREF_JWT_TOKEN";
 
+    private Gson mGson;
+    private Class mCurrentUserClass;
     private BaseModel mCurrentUser;
     private Context mApplicationContext;
     private ArrayList<AuthStateChangedObserver> mObservers;
 
-    private Auth(Context context){
+    private Auth(Context context, Class currentUserClass, Gson gson){
         mApplicationContext = context.getApplicationContext();
+        mCurrentUserClass = currentUserClass;
+        mGson = gson;
         mObservers = new ArrayList<>();
     }
 
@@ -62,6 +69,11 @@ public class Auth {
             observer.onLoginStateChanged();
         }
     }
+    private BaseModel parseUser(JsonObject object){
+        BaseModel user = (BaseModel) mGson.fromJson(object, mCurrentUserClass);
+        setCurrentUser(user);
+        return user;
+    }
 
     private BaseModel loadCurrentUser(){
         return mCurrentUser;
@@ -78,6 +90,10 @@ public class Auth {
 
     public static void setToken(String token){
         sInstance.storeToken(token);
+    }
+
+    public static BaseModel setCurrentUser(JsonObject object){
+      return sInstance.parseUser(object);
     }
 
     public static void clearToken(){

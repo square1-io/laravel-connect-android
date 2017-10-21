@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.square1.laravelConnect.client.gjson.GsonConverterFactory;
 import io.square1.laravelConnect.client.results.Result;
 import io.square1.laravelConnect.client.retrofit.RetrofitApiClient;
 import io.square1.laravelConnect.model.BaseModel;
@@ -59,7 +60,10 @@ public class LaravelConnectClient {
 
 
     private LaravelConnectClient(Context context, LaravelConnectSettings settings){
-        Auth.init(context);
+
+        Auth.init(context,
+                GsonConverterFactory.create().getGson(),
+                settings.getUserModelClass());
 
         mSettings = settings;
         mApplicationContext = context.getApplicationContext();
@@ -180,7 +184,11 @@ public class LaravelConnectClient {
 
     public ApiRequest login(String email, String password, LaravelConnectClient.Observer observer){
         //TODO move client id and secret to settings
-        ApiRequest request = mClientImplementation.login(email, password, "password", 2, "2wcfcHyMTNaeNB7GLYvdSQPpJdxQCbC2RaDMLfhz", observer);
+        ApiRequest request = mClientImplementation.login(email,
+                password,
+                mSettings.getClientGrantType() ,
+                mSettings.getClientId(),
+                mSettings.getClientSecret(), observer);
         request.execute();
         return request;
     }

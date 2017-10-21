@@ -14,6 +14,7 @@ public abstract class LaravelConnectSettings {
     public abstract String getBasePath();
     public abstract String getApiAddress();
 
+
     public abstract String getApiKey();
 
     public String dateFormat(){
@@ -44,5 +45,11 @@ public abstract class LaravelConnectSettings {
         }
     }
 
+    // see https://laravel.com/docs/5.5/passport
+    public abstract int getClientId();
+    public abstract String getClientSecret();
+    public String getClientGrantType() {
+        return " password";
+    }
 
 }
