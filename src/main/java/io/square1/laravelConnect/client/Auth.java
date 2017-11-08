@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
+import io.square1.laravelConnect.client.gjson.GSonModelFactory;
 import io.square1.laravelConnect.model.BaseModel;
 
 /**
@@ -70,7 +71,7 @@ public class Auth {
         }
     }
     private BaseModel parseUser(JsonObject object){
-        BaseModel user = (BaseModel) mGson.fromJson(object, mCurrentUserClass);
+        BaseModel user = GSonModelFactory.getModelInstance(mGson, object, mCurrentUserClass);
         setCurrentUser(user);
         return user;
     }
@@ -124,6 +125,19 @@ public class Auth {
     public static ApiRequest login(String email, String password, LaravelConnectClient.Observer observer){
         LaravelConnectClient connectClient = LaravelConnectClient.getInstance();
         return connectClient.login(email, password, observer);
+    }
+
+    public static ApiRequest refresh(LaravelConnectClient.Observer observer){
+        if(isLoggedIn() == true) {
+            LaravelConnectClient connectClient = LaravelConnectClient.getInstance();
+            return connectClient.refreshCurrentUser(observer);
+        }
+        return null;
+    }
+
+    public static void logout(){
+        setCurrentUser((BaseModel)null);
+        clearToken();
     }
 
 }

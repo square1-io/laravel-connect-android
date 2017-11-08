@@ -66,4 +66,7 @@ public interface RetrofitService {
 
     @POST("auth/register")
     Call<JsonObject> register(@Body Map<String, Object> parameters);
+
+    @GET("auth/current")
+    Call<JsonObject> getCurrentUser();
 }

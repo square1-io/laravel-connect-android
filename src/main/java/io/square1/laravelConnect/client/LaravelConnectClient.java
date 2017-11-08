@@ -183,12 +183,18 @@ public class LaravelConnectClient {
     }
 
     public ApiRequest login(String email, String password, LaravelConnectClient.Observer observer){
-        //TODO move client id and secret to settings
+
         ApiRequest request = mClientImplementation.login(email,
                 password,
                 mSettings.getClientGrantType() ,
                 mSettings.getClientId(),
                 mSettings.getClientSecret(), observer);
+        request.execute();
+        return request;
+    }
+
+    public ApiRequest refreshCurrentUser(LaravelConnectClient.Observer observer){
+        ApiRequest request = mClientImplementation.refreshCurrentUser(observer);
         request.execute();
         return request;
     }
