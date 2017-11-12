@@ -16,8 +16,8 @@ public abstract class ModelRelation extends ModelAttribute {
 
     private BaseModel mParent;
 
-    public ModelRelation(BaseModel parent, String name, int type){
-        super(name, type);
+    public ModelRelation(BaseModel parent, String name, Class dataClass){
+        super(name, dataClass);
         mParent = parent;
     }
 

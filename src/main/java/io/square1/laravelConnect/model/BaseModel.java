@@ -109,6 +109,14 @@ public abstract class BaseModel  {
         return mAttributes;
     }
 
+    public final HashMap<String, ModelOneRelation> getOneRelations(){
+        return mRelations;
+    }
+
+    public final HashMap<String, ModelManyRelation> getManyRelations(){
+        return mManyRelations;
+    }
+
     public final HashMap<String, ModelProperty> getProperties(){
         return mProperties;
     }

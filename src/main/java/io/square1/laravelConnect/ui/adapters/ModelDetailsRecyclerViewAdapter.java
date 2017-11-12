@@ -98,11 +98,11 @@ public class ModelDetailsRecyclerViewAdapter extends RecyclerView.Adapter<ModelA
 
             ModelProperty property = (ModelProperty) attribute;
 
-            if (property.getPropertyClass() == Integer.class) {
+            if (property.getDataClass() == Integer.class) {
                 return VIEW_TYPE_INT;
-            } else if (property.getPropertyClass() == Double.class) {
+            } else if (property.getDataClass() == Double.class) {
                 return VIEW_TYPE_DOUBLE;
-            } else if (property.getPropertyClass() == Date.class) {
+            } else if (property.getDataClass() == Date.class) {
                 return VIEW_TYPE_DATE;
             } else {
                 return VIEW_TYPE_STRING;

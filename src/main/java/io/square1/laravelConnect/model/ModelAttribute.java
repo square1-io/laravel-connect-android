@@ -12,26 +12,26 @@ import java.util.HashMap;
 public abstract class ModelAttribute  {
 
     public static final String  ATTR_NAME = "NAME";
-    public static final String ATTR_TYPE = "ATTR_TYPE";
+    public static final String ATTR_CLASS = "CLASS";
 
 
     private String mName;
-    private final int mType;
+    private Class mDataClass;
 
     private boolean mChanged;
 
-    public ModelAttribute(String name, int type){
-        mType = type;
+    public ModelAttribute(String name, Class dataClass){
         mName = name;
+        mDataClass = dataClass;
         mChanged = false;
-    }
-
-    public int getType(){
-        return mType;
     }
 
     public final String getName(){
         return mName;
+    }
+
+    public final Class getDataClass(){
+        return mDataClass;
     }
 
     public final boolean getChanged(){
@@ -46,7 +46,7 @@ public abstract class ModelAttribute  {
     public HashMap<String, String> pack(){
         HashMap<String,String> pack = new HashMap<>();
         pack.put(ATTR_NAME, mName);
-        pack.put(ATTR_TYPE, String.valueOf(mType));
+        pack.put(ATTR_CLASS, mDataClass.getName());
         return pack;
     }
 

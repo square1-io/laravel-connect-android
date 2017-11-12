@@ -9,22 +9,19 @@ public class ModelOneRelation<T extends BaseModel> extends ModelRelation {
 
     private String mPrimaryKey;
     private T mRelation;
-    private Class mRelationClass;
+
 
     public ModelOneRelation(BaseModel parent, String name, String primaryKey, Class relationClass){
-        super(parent, name, BaseModel.ATTRIBUTE_REL_ONE);
+        super(parent, name, relationClass);
         mPrimaryKey = primaryKey;
-        mRelationClass = relationClass;
-        //mRelation = model;
+
     }
 
     public final String getPrimaryKey(){
         return mPrimaryKey;
     }
 
-    public final Class getRelationClass(){
-        return mRelationClass;
-    }
+
 
     public final T getValue(){
         return mRelation;
@@ -36,6 +33,6 @@ public class ModelOneRelation<T extends BaseModel> extends ModelRelation {
 
     @Override
     public String toString() {
-        return "->" + ((mRelation != null) ? mRelation.toString() : mRelationClass.getSimpleName());
+        return "->" + ((mRelation != null) ? mRelation.toString() : getDataClass().getSimpleName());
     }
 }

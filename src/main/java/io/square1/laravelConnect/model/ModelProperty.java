@@ -10,22 +10,15 @@ import java.util.HashMap;
 
 public class ModelProperty<T> extends ModelAttribute {
 
-    public static final String PROPERTY_VALUE = "PROPERTY_VALUE";
-    public static final String PROPERTY_TYPE = "PROPERTY_TYPE";
+    public static final String PROPERTY_VALUE = "VALUE";
 
     private T mValue;
-    private Class<T> mType;
+
 
 
     public ModelProperty(String name, Class<T> type){
-        super(name, BaseModel.ATTRIBUTE_PROPERTY);
-        mType = type;
+        super(name, type);
 
-    }
-
-
-    public Class<T> getPropertyClass(){
-        return mType;
     }
 
 
@@ -42,7 +35,6 @@ public class ModelProperty<T> extends ModelAttribute {
     @Override
     public HashMap<String, String> pack(){
         HashMap<String,String> pack = super.pack();
-        pack.put(PROPERTY_TYPE, String.valueOf(mType));
         pack.put(PROPERTY_VALUE, String.valueOf(mValue));
         return pack;
     }

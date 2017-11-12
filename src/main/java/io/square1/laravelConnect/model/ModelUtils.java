@@ -60,7 +60,7 @@ public class ModelUtils {
         }
     }
 
-    public static <T extends BaseModel> String privateKeyForModel(Class<T> model){
+    public static <T extends BaseModel> String primaryKeyForModel(Class<T> model){
         try {
             String path = (String) model.getField("PRIMARY_KEY").get(null);
             return path;

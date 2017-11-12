@@ -9,13 +9,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
+import java.util.Collection;
 
 import io.square1.laravelConnect.model.BaseModel;
-import io.square1.laravelConnect.model.ModelAttribute;
-import io.square1.laravelConnect.model.ModelRelation;
-import io.square1.laravelConnect.model.ModelManyRelation;
 import io.square1.laravelConnect.model.ModelOneRelation;
 import io.square1.laravelConnect.model.ModelProperty;
 import io.square1.laravelConnect.model.ModelUtils;
@@ -33,12 +29,12 @@ public class GSonModelFactory {
             return null;
         }
 
-        String currentkey = "";
 
         try {
 
             T model = tClass.newInstance();
 
+            //sometimes we only have id and class for this object.
             if(json instanceof JsonPrimitive) {
                 //we probably only have the id of the object so we just fault and set id if we can
                 if(((JsonPrimitive)json).isNumber()){
@@ -56,7 +52,7 @@ public class GSonModelFactory {
             //set the Id
             JsonObject jsonObject = (JsonObject)json;
 
-            final String modelPrimaryKey = ModelUtils.privateKeyForModel(tClass);
+            final String modelPrimaryKey = ModelUtils.primaryKeyForModel(tClass);
 
             if(!jsonObject.has(modelPrimaryKey)){
                 return null;
@@ -65,81 +61,65 @@ public class GSonModelFactory {
             int id = jsonObject.get(modelPrimaryKey).getAsInt();
             model.getId().setValue(id);
 
-            //loop over the attributes and set values
-            final Set<Map.Entry<String, ModelAttribute>> attributesSet =  model.getAttributes()
-                    .entrySet();
+            // 1) Loop over properties and set values :
 
-            //sometimes we don't get the full related model object but just the id, like user_id instead
-            // of the full user object. in this case we create faulted Model Object carrying only the
-            // so we can fetch it at a later stage.
-            ArrayList<ModelOneRelation> faultedRelations = new ArrayList<>();
+            Collection<ModelProperty> properties = model.getProperties().values();
 
-            for(Map.Entry<String, ModelAttribute> entry : attributesSet) {
+            for(ModelProperty property : properties){
+                //see if we have a values for this property now
+                JsonElement jsonElement = jsonObject.get(property.getName());
 
-                currentkey = entry.getKey();
+                //no value for this propery skip then
+                if(jsonElement == null || jsonElement instanceof com.google.gson.JsonNull){
+                    continue;
+                }
 
+                //what class is this property ?
+                Class propertyClass = property.getDataClass();
 
-                JsonElement jsonElement = jsonObject.get(currentkey);
-
-               // if(jsonElement instanceof com.google.gson.JsonNull){
-               //     Log.d("JSON", "skipping null " + tClass + " key " + currentkey) ;
-               //     continue;
-               // }
-               // Log.d("JSON", "Parsing " + tClass + " key " + currentkey) ;
-
-                //if(jsonElement != null){
-                    //parsing basic properties
-                    if(entry.getValue().getType() == BaseModel.ATTRIBUTE_PROPERTY){
-
-                        if(jsonElement == null || jsonElement instanceof com.google.gson.JsonNull){
-                            continue;
-                        }
-
-                        ModelProperty modelProperty = (ModelProperty)entry.getValue();
-                        Log.d("JSON", "Parsing p:" + tClass + " key " + currentkey) ;
-                        Class propertyClass = modelProperty.getPropertyClass();
-                        if(BaseModel.class.isAssignableFrom(propertyClass)) {
-                            modelProperty.setValue(getModelInstance(gson, jsonElement, modelProperty.getPropertyClass()));
-                        }else {
-                            modelProperty.setValue(gson.fromJson(jsonElement, modelProperty.getPropertyClass()));
-                        }
-                    }
-                    else if(entry.getValue().getType() == BaseModel.ATTRIBUTE_REL_ONE){
-
-                            ModelOneRelation modelOneRelation = (ModelOneRelation) entry.getValue();
-                            BaseModel relationObject = getModelInstance(gson,  jsonElement,
-                                    modelOneRelation.getRelationClass());
-
-                           if(relationObject != null) {
-                               modelOneRelation.setValue(relationObject);
-                           }else {
-                               faultedRelations.add(modelOneRelation);
-                           }
-                    }
-                    else if(entry.getValue().getType() == BaseModel.ATTRIBUTE_REL_MANY){
-                        /// because the number of entries in undefined for Many relation
-                        // and we are missing pagination here we ignore them here for now .
-                       // ModelManyRelation modelManyRelation = (ModelManyRelation)entry.getValue();
-                       // modelManyRelation.clear();
-                        //ArrayList objects = getModelListInstance(gson,
-                        //        (JsonArray)jsonElement ,
-                        //        modelManyRelation.getRelationClass());
-
-                       // modelManyRelation.addAll(objects);
-                    }
-
-              //  }
+                //is this property a relation to a model ? This shouldn't happen as
+                // this should be a ModelOneRelation!
+                if(BaseModel.class.isAssignableFrom(propertyClass)) {
+                    throw new IllegalStateException( property.getName() + " with class "+ propertyClass  + " should be a relation instead ");
+                }
+                else {
+                    property.setValue(gson.fromJson(jsonElement, propertyClass));
+                }
             }
 
-            /// any faulted relations ?
-            for(ModelOneRelation relation : faultedRelations){
-                JsonElement element = jsonObject.get(relation.getPrimaryKey());
-                relation.setValue(getModelInstance(gson,element, relation.getRelationClass()));
+            //2) loop over single relations
+
+            Collection<ModelOneRelation> oneRelations = model.getOneRelations().values();
+
+            for(ModelOneRelation relation : oneRelations){
+
+                //this can go two ways :
+                //a) we have the full object
+                JsonElement jsonElement = jsonObject.get(relation.getName());
+                if(jsonElement != null  && !(jsonElement instanceof com.google.gson.JsonNull)){
+                    //we have the data
+                    BaseModel relatedModel = getModelInstance(gson, jsonElement, relation.getDataClass());
+                    relation.setValue(relatedModel);
+                }else { // b, we only have the id , like user_id for example instead of having the full user object
+
+                     jsonElement = jsonObject.get(relation.getPrimaryKey());
+                    if(jsonElement != null  && !(jsonElement instanceof com.google.gson.JsonNull)){
+                        // we create an emply relation object and we only set the id.
+                        BaseModel relatedModel = getModelInstance(gson, jsonElement, relation.getDataClass());
+                        relation.setValue(relatedModel);
+
+                    }
+                }
             }
+
+            //3) loop over many relations, for now we leave this as if there are too many items it
+            //is not good to return them all from the API
+           // Collection<ModelManyRelation> manyRelations = model.getManyRelations().values();
 
             return model;
+
         }catch (Exception e){
-            Log.e("JSON", "Error parsing " + currentkey) ;
+            Log.e("JSON", "Error parsing  " + tClass.getSimpleName() + " from " + json ) ;
             e.printStackTrace();
         }
 

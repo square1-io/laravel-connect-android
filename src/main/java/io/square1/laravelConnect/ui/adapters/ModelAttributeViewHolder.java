@@ -50,12 +50,12 @@ public  class ModelAttributeViewHolder extends RecyclerView.ViewHolder {
 
         if(attribute instanceof ModelOneRelation) {
             ModelOneRelation relation = ((ModelOneRelation)attribute);
-            return "One relation to " + relation.getRelationClass().getSimpleName();
+            return "One relation to " + relation.getDataClass().getSimpleName();
         }
 
         if(attribute instanceof ModelManyRelation) {
             ModelManyRelation relation = ((ModelManyRelation)attribute);
-            return "Many relation to " + relation.getRelationClass().getSimpleName();
+            return "Many relation to " + relation.getDataClass().getSimpleName();
         }
 
         return "none";
@@ -77,12 +77,12 @@ public  class ModelAttributeViewHolder extends RecyclerView.ViewHolder {
 
         if(attribute instanceof ModelOneRelation) {
             ModelOneRelation relation = ((ModelOneRelation)attribute);
-            return "One relation to " + relation.getRelationClass().getSimpleName();
+            return "One relation to " + relation.getDataClass().getSimpleName();
         }
 
         if(attribute instanceof ModelManyRelation) {
             ModelManyRelation relation = ((ModelManyRelation)attribute);
-            return "Many relation to " + relation.getRelationClass().getSimpleName();
+            return "Many relation to " + relation.getDataClass().getSimpleName();
         }
 
         return "none";

@@ -10,18 +10,10 @@ import android.os.Parcelable;
 public class ModelManyRelation<T extends BaseModel> extends ModelRelation  {
 
 
-    private Class<T> mRelationClass;
-
-
-    public ModelManyRelation(BaseModel parent, String name, Class modelType){
-        super(parent, name, BaseModel.ATTRIBUTE_REL_MANY);
-        mRelationClass = modelType;
+    public ModelManyRelation(BaseModel parent, String name, Class dataClass){
+        super(parent, name, dataClass);
     }
 
-
-    public Class<T> getRelationClass(){
-        return mRelationClass;
-    }
 
     public final ModelManyRelationList list(){
         return new ModelManyRelationList(this);

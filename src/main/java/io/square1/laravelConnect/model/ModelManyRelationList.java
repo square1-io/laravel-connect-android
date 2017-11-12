@@ -41,7 +41,7 @@ public class ModelManyRelationList<T extends BaseModel>  implements List<T>, Lar
 
             return parentClass(relation.getParent().getClass())
                     .parentId(relation.getParent().getIdValue())
-                    .relationClass(relation.getRelationClass())
+                    .relationClass(relation.getDataClass())
                     .relationName(relation.getName());
         }
 
@@ -98,7 +98,7 @@ public class ModelManyRelationList<T extends BaseModel>  implements List<T>, Lar
     }
 
     ModelManyRelationList(ModelManyRelation relation, Filter filter, Sort sort){
-        this(relation.getParent().getClass(), relation.getParent().getIdValue(), relation.getRelationClass(), relation.getName(), filter, sort);
+        this(relation.getParent().getClass(), relation.getParent().getIdValue(), relation.getDataClass(), relation.getName(), filter, sort);
     }
 
     ModelManyRelationList(Class parentClass, Integer parentId, Class relationClass, String relationName, Filter filter, Sort sort){
