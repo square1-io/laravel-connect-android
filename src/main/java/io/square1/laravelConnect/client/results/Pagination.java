@@ -10,6 +10,8 @@ public class Pagination {
 
     public static final int UNDEFINED = -234567;
 
+    public static final int DEFAULT_PAGE_SIZE = 15;
+
     public static final Pagination NOPAGE = new Pagination();
 
     public static final int FIRST_PAGE = 1;
@@ -37,7 +39,7 @@ public class Pagination {
 
     public Pagination(){
         mCurrentPage = 0;
-        mPageSize = 10;
+        mPageSize = DEFAULT_PAGE_SIZE;
         mTotalCount = UNDEFINED;
     }
 

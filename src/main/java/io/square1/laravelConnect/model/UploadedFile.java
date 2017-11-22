@@ -6,6 +6,9 @@ import android.os.Parcelable;
 
 import java.io.File;
 
+import okhttp3.FormBody;
+import okhttp3.MultipartBody;
+
 /**
  * Created by roberto on 16/04/2017.
  */
@@ -16,8 +19,11 @@ public class UploadedFile implements Parcelable {
 
 
 
+
     public UploadedFile(String url){
         mUrl = url;
+
+
     }
 
     public String getUrl(){

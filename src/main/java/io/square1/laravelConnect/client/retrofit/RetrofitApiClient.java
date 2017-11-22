@@ -207,7 +207,7 @@ public class RetrofitApiClient {
 
     public ApiRequest refreshCurrentUser(LaravelConnectClient.Observer observer){
         Call call = mRetrofitService.getCurrentUser();
-        RetrofitAuthRequest retrofitRequest = new RetrofitAuthRequest(call, observer);
+        RetrofitRefreshCurrentUserRequest retrofitRequest = new RetrofitRefreshCurrentUserRequest(call, observer);
         return retrofitRequest;
     }
 

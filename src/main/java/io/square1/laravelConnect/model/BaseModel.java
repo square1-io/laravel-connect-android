@@ -157,7 +157,7 @@ public abstract class BaseModel  {
 
 
 
-    protected static ApiRequest show(Class<? extends BaseModel> modelClass,
+    protected static ApiRequest get(Class<? extends BaseModel> modelClass,
                                      int id, LaravelConnectClient.Observer observer){
 
         LaravelConnectClient apiClient = LaravelConnectClient.getInstance();
@@ -185,6 +185,6 @@ public abstract class BaseModel  {
     public static ApiRequest unpack(Bundle pack, LaravelConnectClient.Observer observer){
         Class modelClass = (Class) pack.getSerializable(PACK_CLASS);
         int modelId = pack.getInt(PACK_ID, 0);
-        return show(modelClass, modelId, observer);
+        return get(modelClass, modelId, observer);
     }
 }

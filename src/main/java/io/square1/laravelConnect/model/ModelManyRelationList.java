@@ -30,7 +30,8 @@ public class ModelManyRelationList<T extends BaseModel>  implements List<T>, Lar
         private Class mRelationClass;
         private String mRelationName;
         private Filter mFilter;
-        private  Sort mSort;
+        private Sort mSort;
+        private Integer mPageSize;
 
         public Builder(){
 
@@ -75,8 +76,14 @@ public class ModelManyRelationList<T extends BaseModel>  implements List<T>, Lar
             return this;
         }
 
+        public Builder pageSize(Integer pageSize){
+            mPageSize = pageSize;
+            return this;
+        }
+
         public ModelManyRelationList build(){
-            return new ModelManyRelationList(mParentClass, mParentId, mRelationClass, mRelationName, mFilter, mSort);
+            return new ModelManyRelationList(mParentClass, mParentId, mRelationClass,
+                    mRelationName, mFilter, mSort, mPageSize);
         }
 
     }
@@ -89,24 +96,28 @@ public class ModelManyRelationList<T extends BaseModel>  implements List<T>, Lar
     private Integer mParentId;
     private Class mRelationClass;
     private String mRelationName;
-
     private Filter mFilter;
     private Sort mSort;
+    private Integer mPageSize;
 
     ModelManyRelationList(ModelManyRelation relation){
        this(relation, null, null);
     }
 
     ModelManyRelationList(ModelManyRelation relation, Filter filter, Sort sort){
-        this(relation.getParent().getClass(), relation.getParent().getIdValue(), relation.getDataClass(), relation.getName(), filter, sort);
+        this(relation.getParent().getClass(), relation.getParent().getIdValue(),
+                relation.getDataClass(), relation.getName(), filter, sort,
+                Pagination.DEFAULT_PAGE_SIZE);
     }
 
-    ModelManyRelationList(Class parentClass, Integer parentId, Class relationClass, String relationName, Filter filter, Sort sort){
+    ModelManyRelationList(Class parentClass, Integer parentId, Class relationClass,
+                          String relationName, Filter filter, Sort sort, Integer pageSize){
         mParentClass = parentClass;
         mParentId = parentId;
         mRelationClass = relationClass;
         mRelationName = relationName;
         mCurrentPage = Pagination.NOPAGE;
+        mPageSize = pageSize;
         mStorage = new ArrayList<>();
         mFilter = filter;
         mSort = sort;
@@ -126,7 +137,7 @@ public class ModelManyRelationList<T extends BaseModel>  implements List<T>, Lar
 
     public ApiRequest next(LaravelConnectClient.Observer observer){
         if(mCurrentPage.hasNext() == true) {
-           return index(mCurrentPage.next(), mCurrentPage.getPageSize(), observer);
+           return index(mCurrentPage.next(), mPageSize, observer);
         }
 
         return null;

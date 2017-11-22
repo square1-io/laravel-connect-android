@@ -64,6 +64,12 @@ public class ModelList<T extends BaseModel>  implements List<T>, LaravelConnectC
     private Filter mFilter;
     private Sort mSort;
 
+
+    public static ModelList listForModel(Class<? extends BaseModel> modelClass){
+        return new ModelList(modelClass);
+
+    }
+
     ModelList(Class tClass){
        this(tClass, null, null);
     }
