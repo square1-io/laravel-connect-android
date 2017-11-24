@@ -16,18 +16,10 @@ import io.square1.laravelConnect.requests.ParamListBuilder;
 
 public abstract class BaseModel  {
 
-
-
-    public static final int ATTRIBUTE_PROPERTY = 1;
-    public static final int ATTRIBUTE_REL_MANY = 2;
-    public static final int ATTRIBUTE_REL_ONE = 3;
-
-
-
     /*package*/ HashMap<String, ModelManyRelation> mManyRelations;
     /*package*/ HashMap<String, ModelOneRelation> mRelations;
     /*package*/ HashMap<String, ModelProperty> mProperties;
-    /*package*/ HashMap<String, ModelAttribute> mAttributes;
+
 
 
     private  class InternalObserver implements LaravelConnectClient.Observer {
@@ -70,7 +62,6 @@ public abstract class BaseModel  {
         mRelations = new HashMap<>();
         mManyRelations = new HashMap<>();
         mProperties = new HashMap<>();
-        mAttributes = new HashMap<>();
 
         mId = addProperty(primaryKey, Integer.class);
         mId.setValue(ID_UNSET);
@@ -82,7 +73,6 @@ public abstract class BaseModel  {
         if(newProperty == null) {
             newProperty = new ModelProperty(name, tClass);
             mProperties.put(name, newProperty);
-            mAttributes.put(name, newProperty);
         }
         return newProperty;
     }
@@ -90,7 +80,6 @@ public abstract class BaseModel  {
     protected final ModelManyRelation addRelation(String name, Class<? extends BaseModel> tClass) {
         ModelManyRelation newRelation = new ModelManyRelation(this, name, tClass);
         mManyRelations.put(name,newRelation);
-        mAttributes.put(name, newRelation);
         return newRelation;
     }
 
@@ -101,12 +90,16 @@ public abstract class BaseModel  {
     protected final ModelOneRelation addRelation(String name, String key, Class<? extends BaseModel> tClass) {
             ModelOneRelation relation = new ModelOneRelation(this, name, key, tClass);
             mRelations.put(key, relation);
-            mAttributes.put(name, relation);
+
             return  relation;
     }
 
     public final HashMap<String, ModelAttribute> getAttributes(){
-        return mAttributes;
+        HashMap<String, ModelAttribute> attributeHashMap = new HashMap<>();
+        attributeHashMap.putAll(mManyRelations);
+        attributeHashMap.putAll(mRelations);
+        attributeHashMap.putAll(mProperties);
+        return attributeHashMap;
     }
 
     public final HashMap<String, ModelOneRelation> getOneRelations(){
